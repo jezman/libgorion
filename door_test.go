@@ -9,7 +9,7 @@ import (
 func TestDoors(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
-		t.Fatalf("an error '%s' was not expected when opening a strub database connection", err)
+		t.Fatalf("an error '%s' was not expected when opening a strub Database connection", err)
 	}
 	defer db.Close()
 
@@ -19,7 +19,7 @@ func TestDoors(t *testing.T) {
 
 	mock.ExpectQuery("^SELECT (.+), (.+) FROM AcessPoint ORDER BY GIndex$").WillReturnRows(rows)
 
-	lib := &database{DB: db}
+	lib := &Database{DB: db}
 	if _, err = lib.Doors(); err != nil {
 		t.Errorf("error was not expected while gets doors %q ", err)
 	}

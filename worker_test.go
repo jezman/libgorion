@@ -9,11 +9,11 @@ import (
 func TestWorker(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
-		t.Fatalf("an error '%s' was not expected when opening a strub database connection", err)
+		t.Fatalf("an error '%s' was not expected when opening a strub Database connection", err)
 	}
 	defer db.Close()
 
-	lib := &database{DB: db}
+	lib := &Database{DB: db}
 
 	column := []string{"firstName", "midName", "lastName", "Company"}
 	rows := sqlmock.NewRows(column).

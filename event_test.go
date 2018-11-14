@@ -8,23 +8,23 @@ import (
 )
 
 var (
-	timeNow   = time.Now().Local()
-	firstDate = timeNow.Format("02.01.2006")
-	lastDate  = timeNow.AddDate(0, 0, 1).Format("02.01.2006")
-	workerName    = "Worker"
-	companyName   = "Company"
+	timeNow     = time.Now().Local()
+	firstDate   = timeNow.Format("02.01.2006")
+	lastDate    = timeNow.AddDate(0, 0, 1).Format("02.01.2006")
+	workerName  = "Worker"
+	companyName = "Company"
 	doorID      = uint(22)
-	denied    = true
+	denied      = true
 )
 
 func TestEvents(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
-		t.Fatalf("an error '%s' was not expected when opening a strub database connection", err)
+		t.Fatalf("an error '%s' was not expected when opening a strub Database connection", err)
 	}
 	defer db.Close()
 
-	lib := &database{DB: db}
+	lib := &Database{DB: db}
 
 	column := []string{"Time", "firstName", "midName", "lastName", "Company", "Door", "Event"}
 	rows := sqlmock.NewRows(column).
@@ -74,11 +74,11 @@ func TestEvents(t *testing.T) {
 func TestWorkedTime(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
-		t.Fatalf("an error '%s' was not expected when opening a strub database connection", err)
+		t.Fatalf("an error '%s' was not expected when opening a strub Database connection", err)
 	}
 	defer db.Close()
 
-	lib := &database{DB: db}
+	lib := &Database{DB: db}
 
 	column := []string{"Time", "firstName", "midName", "lastName", "Company", "Event"}
 	rows := sqlmock.NewRows(column).
@@ -106,11 +106,11 @@ func TestWorkedTime(t *testing.T) {
 func TestEventsValue(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
-		t.Fatalf("an error '%s' was not expected when opening a strub database connection", err)
+		t.Fatalf("an error '%s' was not expected when opening a strub Database connection", err)
 	}
 	defer db.Close()
 
-	lib := &database{DB: db}
+	lib := &Database{DB: db}
 
 	column := []string{"ID", "Value", "Comment"}
 	rows := sqlmock.NewRows(column).
@@ -126,11 +126,11 @@ func TestEventsValue(t *testing.T) {
 func TestEventsTail(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
-		t.Fatalf("an error '%s' was not expected when opening a strub database connection", err)
+		t.Fatalf("an error '%s' was not expected when opening a strub Database connection", err)
 	}
 	defer db.Close()
 
-	lib := &database{DB: db}
+	lib := &Database{DB: db}
 
 	column := []string{"Time", "firstName", "midName", "lastName", "Company", "Door", "Event"}
 	rows := sqlmock.NewRows(column).

@@ -6,9 +6,9 @@ type Company struct {
 	WorkersCount uint
 }
 
-// Company get all comanies from database
+// Company get all comanies from Database
 // return pionter to Company struct and error
-func (db *database) Company() ([]*Company, error) {
+func (db *Database) Company() ([]*Company, error) {
 	rows, err := db.Query(queryCompanies)
 	if err != nil {
 		return nil, err

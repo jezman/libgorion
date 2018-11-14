@@ -28,7 +28,7 @@ type Event struct {
 
 // Events gets the list of events for the time period
 // return pointer to Event struct and error
-func (db *database) Events(firstDate, lastDate, worker string, door uint, denied bool) ([]*Event, error) {
+func (db *Database) Events(firstDate, lastDate, worker string, door uint, denied bool) ([]*Event, error) {
 	// change the query depending on the input flag
 	switch {
 	case door != 0 && worker != "":
@@ -92,7 +92,7 @@ func (db *database) Events(firstDate, lastDate, worker string, door uint, denied
 // WorkedTime gets the list of workers and
 // calculates their worked time
 // return pointer to Event struct and error
-func (db *database) WorkedTime(firstDate, lastDate, worker, company string) ([]*Event, error) {
+func (db *Database) WorkedTime(firstDate, lastDate, worker, company string) ([]*Event, error) {
 	if !validationDate(firstDate) || !validationDate(lastDate) {
 		fmt.Print("invalid date. corrects format: DD.MM.YYYY or DD-MM-YYYY")
 		os.Exit(1)
@@ -150,7 +150,7 @@ func (db *database) WorkedTime(firstDate, lastDate, worker, company string) ([]*
 }
 
 // EventsValues return pointer to Event struct and error
-func (db *database) EventsValues() ([]*Event, error) {
+func (db *Database) EventsValues() ([]*Event, error) {
 	rows, err := db.Query(queryEventsValues)
 	if err != nil {
 		return nil, err
@@ -175,7 +175,7 @@ func (db *database) EventsValues() ([]*Event, error) {
 }
 
 // EventsTail puts tail events to STDOUT.
-func (db *database) EventsTail(interval time.Duration, worker string) error {
+func (db *Database) EventsTail(interval time.Duration, worker string) error {
 	timeNow := time.Now().Local()
 	backForSeconds := timeNow.Add(time.Second * -interval)
 

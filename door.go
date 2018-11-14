@@ -6,9 +6,9 @@ type Door struct {
 	Name string
 }
 
-// Doors get all doors and IDs from database
+// Doors get all doors and IDs from Database
 // return pionter to Door struct and error
-func (db *database) Doors() ([]*Door, error) {
+func (db *Database) Doors() ([]*Door, error) {
 	rows, err := db.Query(queryDoors)
 	if err != nil {
 		return nil, err
