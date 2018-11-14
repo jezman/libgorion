@@ -8,7 +8,7 @@ type Door struct {
 
 // Doors get all doors and IDs from database
 // return pionter to Door struct and error
-func (db *DB) Doors() ([]*Door, error) {
+func (db *database) Doors() ([]*Door, error) {
 	rows, err := db.Query(queryDoors)
 	if err != nil {
 		return nil, err
@@ -17,12 +17,12 @@ func (db *DB) Doors() ([]*Door, error) {
 
 	var doors = make([]*Door, 0)
 	for rows.Next() {
-		door := new(Door)
-		if err = rows.Scan(&door.ID, &door.Name); err != nil {
+		d := new(Door)
+		if err = rows.Scan(&d.ID, &d.Name); err != nil {
 			return nil, err
 		}
 
-		doors = append(doors, door)
+		doors = append(doors, d)
 	}
 
 	if err = rows.Err(); err != nil {

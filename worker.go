@@ -16,7 +16,7 @@ type Worker struct {
 
 // Workers get all workers from database
 // return pionter to Worker struct and error
-func (db *DB) Workers(companyName string) ([]*Worker, error) {
+func (db *database) Workers(companyName string) ([]*Worker, error) {
 	var (
 		rows *sql.Rows
 		err  error
@@ -39,7 +39,7 @@ func (db *DB) Workers(companyName string) ([]*Worker, error) {
 			return nil, err
 		}
 
-		w.FullName = w.LastName + " " + w.FirstName + " " + w.MidName
+		w.FullName = joinNames(w.LastName, w.FirstName, w.MidName)
 
 		workers = append(workers, w)
 	}
@@ -52,7 +52,7 @@ func (db *DB) Workers(companyName string) ([]*Worker, error) {
 }
 
 // AddWorker to ACS
-func (db *DB) AddWorker(name string) (err error) {
+func (db *database) AddWorker(name string) (err error) {
 	tx, err := db.Begin()
 	if err != nil {
 		return
@@ -80,7 +80,7 @@ func (db *DB) AddWorker(name string) (err error) {
 }
 
 // DeleteWorker from ACS database
-func (db *DB) DeleteWorker(name string) error {
+func (db *database) DeleteWorker(name string) error {
 	tx, err := db.Begin()
 	if err != nil {
 		return err

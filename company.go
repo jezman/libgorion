@@ -2,13 +2,13 @@ package libgorion
 
 // Company model
 type Company struct {
-	Name             string
-	CountOfEmployees uint
+	Name         string
+	WorkersCount uint
 }
 
 // Company get all comanies from database
 // return pionter to Company struct and error
-func (db *DB) Company() ([]*Company, error) {
+func (db *database) Company() ([]*Company, error) {
 	rows, err := db.Query(queryCompanies)
 	if err != nil {
 		return nil, err
@@ -17,12 +17,12 @@ func (db *DB) Company() ([]*Company, error) {
 
 	var companies = make([]*Company, 0)
 	for rows.Next() {
-		company := new(Company)
-		if err = rows.Scan(&company.Name, &company.CountOfEmployees); err != nil {
+		c := new(Company)
+		if err = rows.Scan(&c.Name, &c.WorkersCount); err != nil {
 			return nil, err
 		}
 
-		companies = append(companies, company)
+		companies = append(companies, c)
 	}
 
 	if err = rows.Err(); err != nil {

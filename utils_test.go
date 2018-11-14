@@ -17,7 +17,7 @@ func TestColorizedDenied(t *testing.T) {
 		{"начало Запрет конец", color.Red("начало Запрет конец")},
 	}
 	for _, test := range testCases {
-		if got := colorizedDenied(test.input); got != test.want {
+		if got := ColorizedDenied(test.input); got != test.want {
 			t.Errorf("Event(%q) is %q. Need %q", test.input, got, test.want)
 		}
 	}
@@ -56,6 +56,23 @@ func TestSplitFullName(t *testing.T) {
 	for _, test := range testCases {
 		if got, _ := splitFullName(test.fullName); len(got) != len(test.want) {
 			t.Errorf("length error: got - %v, want - %v", got, test.want)
+		}
+	}
+}
+
+func TestJoinNames(t *testing.T) {
+	var testCases = []struct {
+		firstName string
+		midName string
+		lastName string
+		want     string
+	}{
+		{"Иванов", "Иван", "Иванович", "Иванов Иван Иванович"},
+	}
+
+	for _, c := range testCases {
+		if got := joinNames(c.firstName, c.midName, c.lastName); len(got) != len(c.want) {
+			t.Errorf("length error: got - %v, want - %v", got, c.want)
 		}
 	}
 }

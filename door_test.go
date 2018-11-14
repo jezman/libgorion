@@ -19,8 +19,8 @@ func TestDoors(t *testing.T) {
 
 	mock.ExpectQuery("^SELECT (.+), (.+) FROM AcessPoint ORDER BY GIndex$").WillReturnRows(rows)
 
-	app := &DB{db}
-	if _, err = app.Doors(); err != nil {
+	lib := &database{DB: db}
+	if _, err = lib.Doors(); err != nil {
 		t.Errorf("error was not expected while gets doors %q ", err)
 	}
 }

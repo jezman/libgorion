@@ -13,7 +13,7 @@ func TestWorker(t *testing.T) {
 	}
 	defer db.Close()
 
-	app := &DB{db}
+	lib := &database{DB: db}
 
 	column := []string{"firstName", "midName", "lastName", "Company"}
 	rows := sqlmock.NewRows(column).
@@ -22,13 +22,13 @@ func TestWorker(t *testing.T) {
 
 	mock.ExpectQuery(testQueryEmployees).WillReturnRows(rows)
 
-	if _, err = app.Workers(""); err != nil {
+	if _, err = lib.Workers(""); err != nil {
 		t.Errorf("error was not expected while gets worker %q ", err)
 	}
 
 	mock.ExpectQuery(testQueryEmployeesByCompany).WithArgs("company").WillReturnRows(rows)
 
-	if _, err = app.Workers("company"); err != nil {
+	if _, err = lib.Workers("company"); err != nil {
 		t.Errorf("error was not expected while gets worker by company %q ", err)
 	}
 }

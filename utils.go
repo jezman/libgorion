@@ -8,7 +8,7 @@ import (
 )
 
 // ColorizedDenied events
-func colorizedDenied(event string) string {
+func ColorizedDenied(event string) string {
 	if strings.Contains(event, "отклонен") || strings.Contains(event, "Запрет") {
 		return color.Red(event)
 	}
@@ -35,4 +35,8 @@ func splitFullName(name string) ([]string, error) {
 	}
 
 	return fullName, nil
+}
+
+func joinNames(names ...string) string {
+	return strings.Join(names, " ")
 }

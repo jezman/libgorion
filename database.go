@@ -18,14 +18,19 @@ type Datastore interface {
 	WorkedTime(string, string, string, string) ([]*Event, error)
 }
 
-// DB structure used as receiver in methods
-type DB struct {
+// DBInitializer connect to database. Return *sql.DB and error
+type DBInitializer interface {
+	OpenDB(string) (*database, error)
+}
+
+// DB structure used as reciever in methods
+type database struct {
 	*sql.DB
 }
 
 // OpenDB opening connecting to server
 // return pointer to struct DB and error
-func OpenDB(dsn string) (*DB, error) {
+func OpenDB(dsn string) (*database, error) {
 	db, err := sql.Open("mssql", dsn)
 	if err != nil {
 		return nil, err
@@ -35,5 +40,5 @@ func OpenDB(dsn string) (*DB, error) {
 		return nil, err
 	}
 
-	return &DB{DB: db}, nil
+	return &database{DB: db}, nil
 }

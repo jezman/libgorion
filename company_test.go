@@ -19,8 +19,8 @@ func TestCompany(t *testing.T) {
 
 	mock.ExpectQuery(testQueryCompanies).WillReturnRows(rows)
 
-	app := &DB{db}
-	if _, err = app.Company(); err != nil {
+	lib := &database{DB: db}
+	if _, err = lib.Company(); err != nil {
 		t.Errorf("error was not expected while gets company %q ", err)
 	}
 }

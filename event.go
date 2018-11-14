@@ -28,7 +28,7 @@ type Event struct {
 
 // Events gets the list of events for the time period
 // return pointer to Event struct and error
-func (db *DB) Events(firstDate, lastDate, worker string, door uint, denied bool) ([]*Event, error) {
+func (db *database) Events(firstDate, lastDate, worker string, door uint, denied bool) ([]*Event, error) {
 	// change the query depending on the input flag
 	switch {
 	case door != 0 && worker != "":
@@ -58,39 +58,41 @@ func (db *DB) Events(firstDate, lastDate, worker string, door uint, denied bool)
 
 	var events = make([]*Event, 0)
 	for rows.Next() {
-		event := new(Event)
+		e := new(Event)
 		err = rows.Scan(
-			&event.Worker.LastName,
-			&event.Worker.FirstName,
-			&event.Worker.MidName,
-			&event.Worker.Company.Name,
-			&event.FirstTime,
-			&event.Action,
-			&event.Door.Name,
+			&e.Worker.LastName,
+			&e.Worker.FirstName,
+			&e.Worker.MidName,
+			&e.Worker.Company.Name,
+			&e.FirstTime,
+			&e.Action,
+			&e.Door.Name,
 		)
 		if err != nil {
 			return nil, err
 		}
 
-		event.Worker.FullName = event.Worker.LastName + " " +
-			event.Worker.FirstName + " " + event.Worker.MidName
+		e.Worker.FullName = joinNames(
+			e.Worker.LastName,
+			e.Worker.FirstName,
+			e.Worker.MidName,
+		)
 
-		event.WorkedTime = event.LastTime.Sub(event.FirstTime)
+		e.WorkedTime = e.LastTime.Sub(e.FirstTime)
 
-		events = append(events, event)
+		events = append(events, e)
 	}
 
 	if err = rows.Err(); err != nil {
 		return nil, err
 	}
 	return events, nil
-
 }
 
 // WorkedTime gets the list of workers and
 // calculates their worked time
 // return pointer to Event struct and error
-func (db *DB) WorkedTime(firstDate, lastDate, worker, company string) ([]*Event, error) {
+func (db *database) WorkedTime(firstDate, lastDate, worker, company string) ([]*Event, error) {
 	if !validationDate(firstDate) || !validationDate(lastDate) {
 		fmt.Print("invalid date. corrects format: DD.MM.YYYY or DD-MM-YYYY")
 		os.Exit(1)
@@ -116,26 +118,29 @@ func (db *DB) WorkedTime(firstDate, lastDate, worker, company string) ([]*Event,
 
 	var events = make([]*Event, 0)
 	for rows.Next() {
-		event := new(Event)
+		e := new(Event)
 		err = rows.Scan(
-			&event.Worker.LastName,
-			&event.Worker.FirstName,
-			&event.Worker.MidName,
-			&event.Worker.Company.Name,
-			&event.FirstTime,
-			&event.LastTime,
+			&e.Worker.LastName,
+			&e.Worker.FirstName,
+			&e.Worker.MidName,
+			&e.Worker.Company.Name,
+			&e.FirstTime,
+			&e.LastTime,
 		)
 
 		if err != nil {
 			return nil, err
 		}
 
-		event.Worker.FullName = event.Worker.LastName + " " +
-			event.Worker.FirstName + " " + event.Worker.MidName
+		e.Worker.FullName = joinNames(
+			e.Worker.LastName,
+			e.Worker.FirstName,
+			e.Worker.MidName,
+		)
 
-		event.WorkedTime = event.LastTime.Sub(event.FirstTime)
+		e.WorkedTime = e.LastTime.Sub(e.FirstTime)
 
-		events = append(events, event)
+		events = append(events, e)
 	}
 
 	if err = rows.Err(); err != nil {
@@ -145,32 +150,32 @@ func (db *DB) WorkedTime(firstDate, lastDate, worker, company string) ([]*Event,
 }
 
 // EventsValues return pointer to Event struct and error
-func (db *DB) EventsValues() ([]*Event, error) {
+func (db *database) EventsValues() ([]*Event, error) {
 	rows, err := db.Query(queryEventsValues)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	var eventValues = make([]*Event, 0)
+	var values = make([]*Event, 0)
 	for rows.Next() {
-		ev := new(Event)
-		if err = rows.Scan(&ev.ID, &ev.Action, &ev.Description); err != nil {
+		v := new(Event)
+		if err = rows.Scan(&v.ID, &v.Action, &v.Description); err != nil {
 			return nil, err
 		}
 
-		eventValues = append(eventValues, ev)
+		values = append(values, v)
 	}
 
 	if err = rows.Err(); err != nil {
 		return nil, err
 	}
 
-	return eventValues, nil
+	return values, nil
 }
 
 // EventsTail puts tail events to STDOUT.
-func (db *DB) EventsTail(interval time.Duration, worker string) error {
+func (db *database) EventsTail(interval time.Duration, worker string) error {
 	timeNow := time.Now().Local()
 	backForSeconds := timeNow.Add(time.Second * -interval)
 
@@ -184,30 +189,33 @@ func (db *DB) EventsTail(interval time.Duration, worker string) error {
 	}
 
 	for rows.Next() {
-		event := new(Event)
+		e := new(Event)
 		err := rows.Scan(
-			&event.Worker.LastName,
-			&event.Worker.FirstName,
-			&event.Worker.MidName,
-			&event.Worker.Company.Name,
-			&event.FirstTime,
-			&event.Action,
-			&event.Door.Name,
+			&e.Worker.LastName,
+			&e.Worker.FirstName,
+			&e.Worker.MidName,
+			&e.Worker.Company.Name,
+			&e.FirstTime,
+			&e.Action,
+			&e.Door.Name,
 		)
 
 		if err != nil {
 			return err
 		}
 
-		event.Worker.FullName = event.Worker.LastName + " " +
-			event.Worker.FirstName + " " + event.Worker.MidName
+		e.Worker.FullName = joinNames(
+			e.Worker.LastName,
+			e.Worker.FirstName,
+			e.Worker.MidName,
+		)
 
 		fmt.Println(
-			event.FirstTime.Format("02.01.2006 15:04:05"),
-			event.Door.Name,
-			colorizedDenied(event.Action),
-			event.Worker.Company.Name,
-			colorizedWorker(event.Worker.FullName, worker),
+			e.FirstTime.Format("02.01.2006 15:04:05"),
+			e.Door.Name,
+			ColorizedDenied(e.Action),
+			e.Worker.Company.Name,
+			colorizedWorker(e.Worker.FullName, worker),
 		)
 	}
 	defer rows.Close()

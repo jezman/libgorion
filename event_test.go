@@ -11,9 +11,9 @@ var (
 	timeNow   = time.Now().Local()
 	firstDate = timeNow.Format("02.01.2006")
 	lastDate  = timeNow.AddDate(0, 0, 1).Format("02.01.2006")
-	worker    = "Worker"
-	company   = "Company"
-	door      = uint(22)
+	workerName    = "Worker"
+	companyName   = "Company"
+	doorID      = uint(22)
 	denied    = true
 )
 
@@ -24,7 +24,7 @@ func TestEvents(t *testing.T) {
 	}
 	defer db.Close()
 
-	app := &DB{DB: db}
+	lib := &database{DB: db}
 
 	column := []string{"Time", "firstName", "midName", "lastName", "Company", "Door", "Event"}
 	rows := sqlmock.NewRows(column).
@@ -34,31 +34,31 @@ func TestEvents(t *testing.T) {
 		WithArgs(firstDate, lastDate).
 		WillReturnRows(rows)
 
-	if _, err := app.Events(firstDate, lastDate, "", 0, false); err != nil {
+	if _, err := lib.Events(firstDate, lastDate, "", 0, false); err != nil {
 		t.Errorf("error was not expected while gets all events %q ", err)
 	}
 
 	mock.ExpectQuery(testQueryEventsByEmployeeAndDoor).
-		WithArgs(firstDate, lastDate, worker, door).
+		WithArgs(firstDate, lastDate, workerName, doorID).
 		WillReturnRows(rows)
 
-	if _, err = app.Events(firstDate, lastDate, worker, door, false); err != nil {
+	if _, err = lib.Events(firstDate, lastDate, workerName, doorID, false); err != nil {
 		t.Errorf("error was not expected while gets events by worker and door %q ", err)
 	}
 
 	mock.ExpectQuery(testQueryEventsByEmployee).
-		WithArgs(firstDate, lastDate, worker).
+		WithArgs(firstDate, lastDate, workerName).
 		WillReturnRows(rows)
 
-	if _, err = app.Events(firstDate, lastDate, worker, 0, false); err != nil {
+	if _, err = lib.Events(firstDate, lastDate, workerName, 0, false); err != nil {
 		t.Errorf("error was not expected while gets events by worker %q ", err)
 	}
 
 	mock.ExpectQuery(testQueryEventsByDoor).
-		WithArgs(firstDate, lastDate, door).
+		WithArgs(firstDate, lastDate, doorID).
 		WillReturnRows(rows)
 
-	if _, err = app.Events(firstDate, lastDate, "", door, false); err != nil {
+	if _, err = lib.Events(firstDate, lastDate, "", doorID, false); err != nil {
 		t.Errorf("error was not expected while gets events by door %q ", err)
 	}
 
@@ -66,7 +66,7 @@ func TestEvents(t *testing.T) {
 		WithArgs(firstDate, lastDate).
 		WillReturnRows(rows)
 
-	if _, err = app.Events(firstDate, lastDate, "", 0, denied); err != nil {
+	if _, err = lib.Events(firstDate, lastDate, "", 0, denied); err != nil {
 		t.Errorf("error was not expected while gets denied events %q ", err)
 	}
 }
@@ -78,7 +78,7 @@ func TestWorkedTime(t *testing.T) {
 	}
 	defer db.Close()
 
-	app := &DB{DB: db}
+	lib := &database{DB: db}
 
 	column := []string{"Time", "firstName", "midName", "lastName", "Company", "Event"}
 	rows := sqlmock.NewRows(column).
@@ -86,19 +86,19 @@ func TestWorkedTime(t *testing.T) {
 
 	mock.ExpectQuery(testQueryWorkedTime).WillReturnRows(rows)
 
-	if _, err = app.WorkedTime(firstDate, lastDate, "", ""); err != nil {
+	if _, err = lib.WorkedTime(firstDate, lastDate, "", ""); err != nil {
 		t.Errorf("error was not expected while gets worked time %q ", err)
 	}
 
 	mock.ExpectQuery(testQueryWorkedTimeByCompany).WillReturnRows(rows)
 
-	if _, err = app.WorkedTime(firstDate, lastDate, "", company); err != nil {
+	if _, err = lib.WorkedTime(firstDate, lastDate, "", companyName); err != nil {
 		t.Errorf("error was not expected while gets worked time %q ", err)
 	}
 
 	mock.ExpectQuery(testQueryWorkedTimeByEmployee).WillReturnRows(rows)
 
-	if _, err = app.WorkedTime(firstDate, lastDate, worker, ""); err != nil {
+	if _, err = lib.WorkedTime(firstDate, lastDate, workerName, ""); err != nil {
 		t.Errorf("error was not expected while gets worked time %q ", err)
 	}
 }
@@ -110,7 +110,7 @@ func TestEventsValue(t *testing.T) {
 	}
 	defer db.Close()
 
-	app := &DB{DB: db}
+	lib := &database{DB: db}
 
 	column := []string{"ID", "Value", "Comment"}
 	rows := sqlmock.NewRows(column).
@@ -118,7 +118,7 @@ func TestEventsValue(t *testing.T) {
 
 	mock.ExpectQuery(testQueryEventsValues).WillReturnRows(rows)
 
-	if _, err := app.EventsValues(); err != nil {
+	if _, err := lib.EventsValues(); err != nil {
 		t.Errorf("error was not expected while gets events values %q ", err)
 	}
 }
@@ -130,7 +130,7 @@ func TestEventsTail(t *testing.T) {
 	}
 	defer db.Close()
 
-	app := &DB{DB: db}
+	lib := &database{DB: db}
 
 	column := []string{"Time", "firstName", "midName", "lastName", "Company", "Door", "Event"}
 	rows := sqlmock.NewRows(column).
@@ -144,7 +144,7 @@ func TestEventsTail(t *testing.T) {
 		WithArgs(backForSeconds.Format("02.01.2006 15:04:05"), timeNow.Format("02.01.2006 15:04:05")).
 		WillReturnRows(rows)
 
-	if err := app.EventsTail(interval, ""); err != nil {
+	if err := lib.EventsTail(interval, ""); err != nil {
 		t.Errorf("error was not expected while gets all events %q ", err)
 	}
 }
