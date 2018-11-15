@@ -95,4 +95,5 @@ const (
 		WHERE Name = ?1
 		AND FirstName = ?2
 		AND MidName = ?3`
+	queryUpdateWorkerCardStatus = `UPDATE pMark SET Config = ?1 WHERE OwnerName = ?2`
 )

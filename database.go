@@ -9,6 +9,8 @@ import (
 type Datastore interface {
 	AddWorker(string) error
 	DeleteWorker(string) error
+	DisableWorkerCard(string) error
+	EnableWorkerCard(string) error
 	Company() ([]*Company, error)
 	Doors() ([]*Door, error)
 	Workers(string) ([]*Worker, error)
