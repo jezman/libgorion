@@ -82,4 +82,8 @@ const (
 		AND (.+) = (.+)
 		GROUP BY (.+), (.+), (.+), (.+), (.+)$`
 	testQueryEventsValues = "SELECT (.+), (.+), (.+) from Events"
+	testQueryFindWorkerIDByName = `^SELECT (.+) FROM pList
+		WHERE Name = (.+)
+		AND FirstName = (.+)
+		AND MidName = (.+)$`
 )

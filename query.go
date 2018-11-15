@@ -91,7 +91,7 @@ const (
 		WHERE Name = ?1
 		AND FirstName = ?2
 		AND MidName = ?3`
-	queryFindWorker = `SELECT ID FROM pList
+	queryFindWorkerIDByName = `SELECT ID FROM pList
 		WHERE Name = ?1
 		AND FirstName = ?2
 		AND MidName = ?3`

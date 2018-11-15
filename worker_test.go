@@ -32,3 +32,22 @@ func TestWorker(t *testing.T) {
 		t.Errorf("error was not expected while gets worker by company %q ", err)
 	}
 }
+
+func TestFindWorkerIDByName(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("an error '%s' was not expected when opening a strub Database connection", err)
+	}
+	defer db.Close()
+
+	lib := &Database{DB: db}
+	
+	column := []string{"ID"}
+	rows := sqlmock.NewRows(column).AddRow("1").AddRow("2")
+	
+	mock.ExpectQuery(testQueryFindWorkerIDByName).WithArgs("Fn", "Mn", "Ln").WillReturnRows(rows)
+	
+	if err = lib.findWorkerIDByName("fn mn ln"); err != nil {
+		t.Errorf("error %q ", err)
+	}
+}

@@ -100,10 +100,10 @@ func (db *Database) DeleteWorker(name string) error {
 		}
 	}()
 
-	if err = db.findWorker(name); err != nil {
+	if err = db.findWorkerIDByName(name); err != nil {
 		return err
 	}
-	
+
 	if _, err = tx.Exec(queryDeleteWorkerCards, name); err != nil {
 		return err
 	}
@@ -120,7 +120,7 @@ func (db *Database) DeleteWorker(name string) error {
 	return err
 }
 
-// DisableWorkerCard by worker full name. 
+// DisableWorkerCard by worker full name.
 func (db *Database) DisableWorkerCard(name string) error {
 	tx, err := db.Begin()
 	if err != nil {
@@ -136,7 +136,7 @@ func (db *Database) DisableWorkerCard(name string) error {
 		}
 	}()
 
-	if err = db.findWorker(name); err != nil {
+	if err = db.findWorkerIDByName(name); err != nil {
 		return err
 	}
 
@@ -147,7 +147,7 @@ func (db *Database) DisableWorkerCard(name string) error {
 	return err
 }
 
-// EnableWorkerCard by worker full name. 
+// EnableWorkerCard by worker full name.
 func (db *Database) EnableWorkerCard(name string) error {
 	tx, err := db.Begin()
 	if err != nil {
@@ -163,7 +163,7 @@ func (db *Database) EnableWorkerCard(name string) error {
 		}
 	}()
 
-	if err = db.findWorker(name); err != nil {
+	if err = db.findWorkerIDByName(name); err != nil {
 		return err
 	}
 
@@ -174,17 +174,17 @@ func (db *Database) EnableWorkerCard(name string) error {
 	return err
 }
 
-func (db *Database) findWorker(names string) error {
+func (db *Database) findWorkerIDByName(names string) error {
 	fullName, err := splitFullName(names)
 	if err != nil {
 		return err
 	}
 
-	rows, err = db.Query(queryFindWorker, fullName[0], fullName[1], fullName[2])
-	defer rows.Close()
+	rows, err = db.Query(queryFindWorkerIDByName, fullName[0], fullName[1], fullName[2])
 	if err != nil {
 		return err
 	}
+	defer rows.Close()
 
 	if !rows.Next() {
 		return errors.New("worker not found")
