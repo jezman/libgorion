@@ -3,7 +3,6 @@ package libgorion
 import (
 	"database/sql"
 	"fmt"
-	"os"
 	"time"
 )
 
@@ -32,15 +31,13 @@ func (db *Database) Events(firstDate, lastDate, worker string, door uint, denied
 	// change the query depending on the input flag
 	switch {
 	case door != 0 && worker != "":
-		if !validationEmployee(worker) {
-			fmt.Print("invalid worker. allowed only letters")
-			os.Exit(1)
+		if err := validationWorker(worker); err != nil {
+			return nil, err
 		}
 		rows, err = db.Query(queryEventsByEmployeeAndDoor, firstDate, lastDate, worker, door)
 	case worker != "":
-		if !validationEmployee(worker) {
-			fmt.Print("invalid worker. allowed only letters")
-			os.Exit(1)
+		if err := validationWorker(worker); err != nil {
+			return nil, err
 		}
 		rows, err = db.Query(queryEventsByEmployee, firstDate, lastDate, worker)
 	case door != 0:
@@ -93,16 +90,18 @@ func (db *Database) Events(firstDate, lastDate, worker string, door uint, denied
 // calculates their worked time
 // return pointer to Event struct and error
 func (db *Database) WorkedTime(firstDate, lastDate, worker, company string) ([]*Event, error) {
-	if !validationDate(firstDate) || !validationDate(lastDate) {
-		fmt.Print("invalid date. corrects format: DD.MM.YYYY or DD-MM-YYYY")
-		os.Exit(1)
+	if err = validationDate(firstDate); err != nil {
+		return nil, err
+	}
+
+	if err = validationDate(lastDate); err != nil {
+		return nil, err
 	}
 
 	switch {
 	case worker != "":
-		if !validationEmployee(worker) {
-			fmt.Print("invalid worker. allowed only letters")
-			os.Exit(1)
+		if err = validationWorker(worker); err != nil {
+			return nil, err
 		}
 		rows, err = db.Query(queryWorkedTimeByEmployee, firstDate, lastDate, worker)
 	case company != "":
