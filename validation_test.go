@@ -1,40 +1,48 @@
 package libgorion
 
 import (
+	"errors"
 	"testing"
 )
 
-func TestEmployee(t *testing.T) {
-	var tests = []struct {
-		input string
-		want  bool
-	}{
-		{"user", true},
-		{"сотрудник", true},
-		{"a", true},
-		{"123456", false},
-	}
-	for _, test := range tests {
-		if got := validationEmployee(test.input); got != test.want {
-			t.Errorf("Worker(%q) is %v. Need %v", test.input, test.want, got)
+func TestValidWorkers(t *testing.T) {
+	validCases := []string{"user", "сотрудник"}
+
+	for _, test := range validCases {
+		if err := validationWorker(test); err != nil {
+			t.Errorf("regexp don't match: (%v)", err)
 		}
 	}
 }
 
-func TestValidationDate(t *testing.T) {
-	var tests = []struct {
-		input string
-		want  bool
-	}{
-		{"02.12.2007", true},
-		{"02-12-2007", true},
-		{"02/12/2007", false},
-		{"f", false},
-		{"123456", false},
+func TestInvalidWorkers(t *testing.T) {
+	invalidCases := []string{"a", "123456"}
+
+	for _, test := range invalidCases {
+		err := validationWorker(test)
+		if err == errors.New("invalid worker. allowed only letters") {
+			t.Errorf("regexp don't match: (%v)", err)
+		}
 	}
-	for _, test := range tests {
-		if got := validationDate(test.input); got != test.want {
-			t.Errorf("Worker(%q) is %v. Need %v", test.input, test.want, got)
+}
+
+func TestValidDate(t *testing.T) {
+	validCases := []string{"02.12.2007", "02-12-2007"}
+
+	for _, test := range validCases {
+		if err := validationDate(test); err != nil {
+			t.Errorf("regexp don't match: (%v)", err)
+		}
+	}
+}
+
+func TestInvalidDate(t *testing.T) {
+	invalidCases := []string{"02/12/2007", "f", "123456"}
+
+	for _, test := range invalidCases {
+		err = validationDate(test)
+		if err == errors.New("invalid date. corrects format: DD.MM.YYYY or DD-MM-YYYY") {
+			t.Errorf("regexp don't match: (%v)", err)
 		}
 	}
 }

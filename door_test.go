@@ -23,4 +23,8 @@ func TestDoors(t *testing.T) {
 	if _, err = lib.Doors(); err != nil {
 		t.Errorf("error was not expected while gets doors %q ", err)
 	}
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("there were unfulfilled expectations: %s", err)
+	}
 }

@@ -23,4 +23,8 @@ func TestCompany(t *testing.T) {
 	if _, err = lib.Company(); err != nil {
 		t.Errorf("error was not expected while gets company %q ", err)
 	}
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("there were unfulfilled expectations: %s", err)
+	}
 }
