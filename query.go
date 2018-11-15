@@ -80,14 +80,14 @@ const (
 	queryCompanies = `SELECT c.Name, Count(pList.Name) FROM pList
 		JOIN pCompany c ON (c.ID = Company)
 		GROUP BY c.Name`
-	queryDoors = "SELECT GIndex, Name FROM AcessPoint ORDER BY GIndex"
+	queryDoors        = "SELECT GIndex, Name FROM AcessPoint ORDER BY GIndex"
 	queryEventsValues = "SELECT Event, Contents, Comment from Events"
-	queryAddWorker = `DECLARE @pID int
+	queryAddWorker    = `DECLARE @pID int
 		SELECT @pID = MAX(ID)+1 FROM pList
 		INSERT INTO pList (ID, Status, Name, FirstName, MidName)
 		VALUES(@pID, 5, ?1, ?2, ?3)`
 	queryDeleteWorkerCards = "DELETE FROM pMark WHERE OwnerName = ?1"
-	queryDeleteWorker = `DELETE FROM pList
+	queryDeleteWorker      = `DELETE FROM pList
 		WHERE Name = ?1
 		AND FirstName = ?2
 		AND MidName = ?3`

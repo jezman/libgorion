@@ -6,8 +6,8 @@ import (
 )
 
 const (
-	disableCardCode   = 32896
-	enableCardCode = 128
+	disableCardCode = 32896
+	enableCardCode  = 128
 )
 
 // Worker model

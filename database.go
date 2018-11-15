@@ -20,7 +20,7 @@ type Datastore interface {
 	WorkedTime(string, string, string, string) ([]*Event, error)
 }
 
-// Database structure used as reciever in methods
+// Database structure used as receiver in methods
 type Database struct {
 	*sql.DB
 }

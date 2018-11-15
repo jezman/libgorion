@@ -63,9 +63,9 @@ func TestSplitFullName(t *testing.T) {
 func TestJoinNames(t *testing.T) {
 	var testCases = []struct {
 		firstName string
-		midName string
-		lastName string
-		want     string
+		midName   string
+		lastName  string
+		want      string
 	}{
 		{"Иванов", "Иван", "Иванович", "Иванов Иван Иванович"},
 	}

@@ -11,7 +11,7 @@ const (
 	testQueryCompanies = `^SELECT (.+), (.+) FROM pList
 		JOIN pCompany c ON ((.+) = (.+))
 		GROUP BY (.+)$`
-	testQueryDoors = "^SELECT (.+), (.+) FROM AcessPoint ORDER BY GIndex$"
+	testQueryDoors  = "^SELECT (.+), (.+) FROM AcessPoint ORDER BY GIndex$"
 	testQueryEvents = `^SELECT (.+), (.+), (.+), (.+), (.+), (.+), (.+)
 	    FROM pLogData l
 		JOIN pList p ON ((.+) = (.+))
@@ -81,7 +81,7 @@ const (
 		WHERE TimeVal BETWEEN (.+) AND (.+)
 		AND (.+) = (.+)
 		GROUP BY (.+), (.+), (.+), (.+), (.+)$`
-	testQueryEventsValues = "SELECT (.+), (.+), (.+) from Events"
+	testQueryEventsValues       = "SELECT (.+), (.+), (.+) from Events"
 	testQueryFindWorkerIDByName = `^SELECT (.+) FROM pList
 		WHERE Name = (.+)
 		AND FirstName = (.+)
@@ -91,7 +91,7 @@ const (
 		INSERT INTO pList (ID, Status, Name, FirstName, MidName)
 		VALUES((.+), 5, (.+), (.+), (.+))`
 	testQueryDeleteWorkerCards = "^DELETE FROM pMark WHERE OwnerName = (.+)$"
-	testQueryDeleteWorker = `^DELETE FROM pList
+	testQueryDeleteWorker      = `^DELETE FROM pList
 		WHERE Name = (.+)
 		AND FirstName = (.+)
 		AND MidName = (.+)$`
