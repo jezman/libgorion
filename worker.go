@@ -5,6 +5,11 @@ import (
 	"errors"
 )
 
+const (
+	blockCardCode   = 32896
+	unblockCardCode = 128
+)
+
 // Worker model
 type Worker struct {
 	FirstName string
@@ -100,14 +105,8 @@ func (db *Database) DeleteWorker(name string) error {
 		return err
 	}
 
-	rows, err = db.Query(queryFindWorker, fullName[0], fullName[1], fullName[2])
-	defer rows.Close()
-	if err != nil {
+	if err = db.findWorker(fullName); err != nil {
 		return err
-	}
-
-	if !rows.Next() {
-		return errors.New("worker not found")
 	}
 
 	if _, err = tx.Exec(queryDeleteWorkerCards, name); err != nil {
@@ -119,4 +118,82 @@ func (db *Database) DeleteWorker(name string) error {
 	}
 
 	return err
+}
+
+// DisableWorkerCard by worker full name. 
+func (db *Database) DisableWorkerCard(name string) error {
+	tx, err := db.Begin()
+	if err != nil {
+		return err
+	}
+
+	defer func() {
+		switch err {
+		case nil:
+			err = tx.Commit()
+		default:
+			tx.Rollback()
+		}
+	}()
+
+	fullName, err := splitFullName(name)
+	if err != nil {
+		return err
+	}
+
+	if err = db.findWorker(fullName); err != nil {
+		return err
+	}
+
+	if _, err = tx.Exec(queryUpdateWorkerCardStatus, blockCardCode, fullName); err != nil {
+		return err
+	}
+
+	return err
+}
+
+// EnableWorkerCard by worker full name. 
+func (db *Database) EnableWorkerCard(name string) error {
+	tx, err := db.Begin()
+	if err != nil {
+		return err
+	}
+
+	defer func() {
+		switch err {
+		case nil:
+			err = tx.Commit()
+		default:
+			tx.Rollback()
+		}
+	}()
+
+	fullName, err := splitFullName(name)
+	if err != nil {
+		return err
+	}
+
+	if err = db.findWorker(fullName); err != nil {
+		return err
+	}
+
+	if _, err = tx.Exec(queryUpdateWorkerCardStatus, unblockCardCode, fullName); err != nil {
+		return err
+	}
+
+	return err
+}
+
+func (db *Database) findWorker(names []string) error {
+	rows, err = db.Query(queryFindWorker, names[0], names[1], names[2])
+	defer rows.Close()
+	if err != nil {
+		return err
+	}
+
+	if !rows.Next() {
+		return errors.New("worker not found")
+	}
+
+	return nil
 }
