@@ -6,8 +6,8 @@ import (
 )
 
 const (
-	blockCardCode   = 32896
-	unblockCardCode = 128
+	disableCardCode   = 32896
+	enableCardCode = 128
 )
 
 // Worker model
@@ -140,7 +140,7 @@ func (db *Database) DisableWorkerCard(name string) error {
 		return err
 	}
 
-	if _, err = tx.Exec(queryUpdateWorkerCardStatus, blockCardCode, name); err != nil {
+	if _, err = tx.Exec(queryUpdateWorkerCardStatus, disableCardCode, name); err != nil {
 		return err
 	}
 
@@ -167,7 +167,7 @@ func (db *Database) EnableWorkerCard(name string) error {
 		return err
 	}
 
-	if _, err = tx.Exec(queryUpdateWorkerCardStatus, unblockCardCode, name); err != nil {
+	if _, err = tx.Exec(queryUpdateWorkerCardStatus, enableCardCode, name); err != nil {
 		return err
 	}
 

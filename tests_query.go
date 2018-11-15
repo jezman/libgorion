@@ -86,4 +86,14 @@ const (
 		WHERE Name = (.+)
 		AND FirstName = (.+)
 		AND MidName = (.+)$`
+	testQueryAddWorker = `^DECLARE (.+) int
+		SELECT (.+) = (.+) FROM pList
+		INSERT INTO pList (ID, Status, Name, FirstName, MidName)
+		VALUES((.+), 5, (.+), (.+), (.+))`
+	testQueryDeleteWorkerCards = "^DELETE FROM pMark WHERE OwnerName = (.+)$"
+	testQueryDeleteWorker = `^DELETE FROM pList
+		WHERE Name = (.+)
+		AND FirstName = (.+)
+		AND MidName = (.+)$`
+	testQueryUpdateWorkerCardStatus = `^UPDATE pMark SET Config = (.+) WHERE OwnerName = (.+)$`
 )

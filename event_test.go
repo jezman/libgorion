@@ -69,6 +69,10 @@ func TestEvents(t *testing.T) {
 	if _, err = lib.Events(firstDate, lastDate, "", 0, denied); err != nil {
 		t.Errorf("error was not expected while gets denied events %q ", err)
 	}
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("there were unfulfilled expectations: %s", err)
+	}
 }
 
 func TestWorkedTime(t *testing.T) {
@@ -101,6 +105,10 @@ func TestWorkedTime(t *testing.T) {
 	if _, err = lib.WorkedTime(firstDate, lastDate, workerName, ""); err != nil {
 		t.Errorf("error was not expected while gets worked time %q ", err)
 	}
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("there were unfulfilled expectations: %s", err)
+	}
 }
 
 func TestEventsValue(t *testing.T) {
@@ -120,6 +128,10 @@ func TestEventsValue(t *testing.T) {
 
 	if _, err := lib.EventsValues(); err != nil {
 		t.Errorf("error was not expected while gets events values %q ", err)
+	}
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("there were unfulfilled expectations: %s", err)
 	}
 }
 
@@ -146,5 +158,9 @@ func TestEventsTail(t *testing.T) {
 
 	if err := lib.EventsTail(interval, ""); err != nil {
 		t.Errorf("error was not expected while gets all events %q ", err)
+	}
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("there were unfulfilled expectations: %s", err)
 	}
 }
