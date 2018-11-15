@@ -100,16 +100,16 @@ func (db *Database) DeleteWorker(name string) error {
 		}
 	}()
 
+	if err = db.findWorker(name); err != nil {
+		return err
+	}
+	
+	if _, err = tx.Exec(queryDeleteWorkerCards, name); err != nil {
+		return err
+	}
+
 	fullName, err := splitFullName(name)
 	if err != nil {
-		return err
-	}
-
-	if err = db.findWorker(fullName); err != nil {
-		return err
-	}
-
-	if _, err = tx.Exec(queryDeleteWorkerCards, name); err != nil {
 		return err
 	}
 
@@ -136,16 +136,11 @@ func (db *Database) DisableWorkerCard(name string) error {
 		}
 	}()
 
-	fullName, err := splitFullName(name)
-	if err != nil {
+	if err = db.findWorker(name); err != nil {
 		return err
 	}
 
-	if err = db.findWorker(fullName); err != nil {
-		return err
-	}
-
-	if _, err = tx.Exec(queryUpdateWorkerCardStatus, blockCardCode, fullName); err != nil {
+	if _, err = tx.Exec(queryUpdateWorkerCardStatus, blockCardCode, name); err != nil {
 		return err
 	}
 
@@ -168,24 +163,24 @@ func (db *Database) EnableWorkerCard(name string) error {
 		}
 	}()
 
-	fullName, err := splitFullName(name)
-	if err != nil {
+	if err = db.findWorker(name); err != nil {
 		return err
 	}
 
-	if err = db.findWorker(fullName); err != nil {
-		return err
-	}
-
-	if _, err = tx.Exec(queryUpdateWorkerCardStatus, unblockCardCode, fullName); err != nil {
+	if _, err = tx.Exec(queryUpdateWorkerCardStatus, unblockCardCode, name); err != nil {
 		return err
 	}
 
 	return err
 }
 
-func (db *Database) findWorker(names []string) error {
-	rows, err = db.Query(queryFindWorker, names[0], names[1], names[2])
+func (db *Database) findWorker(names string) error {
+	fullName, err := splitFullName(names)
+	if err != nil {
+		return err
+	}
+
+	rows, err = db.Query(queryFindWorker, fullName[0], fullName[1], fullName[2])
 	defer rows.Close()
 	if err != nil {
 		return err
