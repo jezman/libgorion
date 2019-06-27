@@ -3,6 +3,7 @@ package libgorion
 import (
 	"database/sql"
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -28,6 +29,8 @@ type Event struct {
 // Events gets the list of events for the time period
 // return pointer to Event struct and error
 func (db *Database) Events(firstDate, lastDate, worker string, door uint, denied bool) ([]*Event, error) {
+	worker = strings.Title(worker)
+
 	// change the query depending on the input flag
 	switch {
 	case door != 0 && worker != "":
@@ -97,6 +100,8 @@ func (db *Database) WorkedTime(firstDate, lastDate, worker, company string) ([]*
 	if err = validationDate(lastDate); err != nil {
 		return nil, err
 	}
+
+	worker = strings.Title(worker)
 
 	switch {
 	case worker != "":
